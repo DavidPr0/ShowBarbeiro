@@ -1,0 +1,14 @@
+{
+  "name": "ShowBarbeiro",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/DavidPr0/ShowBarbeiro.git",
+  "author": "DavidPr0 <davidpaco2.4@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}
