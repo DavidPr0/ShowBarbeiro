@@ -1,27 +1,42 @@
+import 'reflect-metadata';
 import { Router } from 'express';
+import { getCustomRepository } from 'typeorm';
+
 import bodyParser from 'body-parser';
-import { startOfHour, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
+
 import AgendamentosRepositorio from '../repositories/AgendamentosRepositorio';
+import CriarAgendamentoSevicos from '../services/CriaAgendamentosServicos';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const agendamentosRotas = Router();
-const agendamentosRepositorio = new AgendamentosRepositorio();
 
 const jsonPaeser = bodyParser.json();
 
-agendamentosRotas.post('/', jsonPaeser, (request, response) => {
-    const { provider, date } = request.body;
+agendamentosRotas.use(ensureAuthenticated);
 
-    const parsedDate = startOfHour(parseISO(date));
+agendamentosRotas.get('/', async (request, response) => {
+    const agendamentosRepositorio = getCustomRepository(AgendamentosRepositorio);
+    const agendamentos = await agendamentosRepositorio.find();
 
-    const agendamentosMesmoHorario = agendamentosRepositorio.buscaData(parsedDate);
+    return response.json(agendamentos);
+});
 
-    if (agendamentosMesmoHorario) {
-        return response.status(400).json({ mensage: 'Já existe um agendamento para esse horário!'});
-    }
+agendamentosRotas.post('/', jsonPaeser, async (request, response) => {
 
-    const agendamento = agendamentosRepositorio.create(provider, parsedDate);
+    const { provider_id, date } = request.body;
+
+    const parsedDate = parseISO(date);
+
+    const criarAgendamento = new CriarAgendamentoSevicos();
+
+    const agendamento = await criarAgendamento.execute({
+        date: parsedDate,
+        provider_id,
+    });
 
     return response.json(agendamento);
+
 });
 
 export default agendamentosRotas;
