@@ -43,12 +43,14 @@
       "import/no-duplicates": "off",
       "@typescript-eslint/camelcase": "off",
       "@typescript-eslint/no-use-before-define": "off",
+      "no-useless-constructor": "off",
       "@typescript-eslint/explicit-function-return-type": [
         "error",
         {
           "allowExpressions": true
         }
       ],
+      "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
       "import/extensions": [
         "error",
         "ignorePackages",
